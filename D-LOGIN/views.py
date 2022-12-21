@@ -47,7 +47,7 @@ def index(request):
             return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"CHANGING"})
         
         if B == "SEND":
-            try:
+            try:                                        # v Will remove white spaces
                 Password = str(request.POST["NEW_PASS"]).strip()
                 
                 if Password:
@@ -88,7 +88,7 @@ def SING_UP(request):
             US = models.account.objects.values_list('Username') # < Will get all the usernames from database
 
             if Password and Username:
-                for U in US:       # v Will remove the white spaces
+                for U in US:
                     if Username == str(U[0]):
                         ACCOUNT = False
                         break
