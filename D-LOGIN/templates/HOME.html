@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+
+<style>
+    body 
+    {
+        background-color: black;
+        color: white;
+    }
+</style>
+
+<body style="font-family: Arial">
+
+    {% if CK != None %} <!-- < If the AC_Cockie have a value -->
+        <h1>[D-LOGIN] - [{{CK}}]</h1>
+                        <!-- ^ Will show the username of the account logged -->
+    {% else %}
+        <h1>[D-LOGIN] - [Unlogged]</h1>
+    {% endif %}
+    <h2>A login system made in django framework</h2>
+
+    <h2>What do you want to do with your account?</h2>
+    <form method="POST">
+        {% csrf_token %} <!-- < Creates a token for security -->
+        <input type="submit" name="BUTTON" value="SING_UP"/>
+        <input type="submit" name="BUTTON" value="LOGIN"/>
+        {% if CK %}
+            <input type="submit" name="BUTTON" value="DELETE"/>
+            <br>
+            <br>
+            {% if CHANGE_PASS != "CHANGING" %}
+                <input type="submit" name="BUTTON" value="CHANGE THE PASSWORD"/>
+                
+                {% if CHANGE_PASS == "CHANGED" %}
+                    <h2>PASSWORD CHANGED</h2>
+                {% endif %}
+
+                {% if CHANGE_PASS == "ERROR" %}
+                    <h2 style="color: red;">SOMETHING IS WRONG</h2>
+                {% endif %}
+
+            {% else %}
+                <input type="password" name="NEW_PASS">
+                <input type="submit" name="BUTTON" value="SEND"/>
+            {% endif %}
+        {% endif %}
+    </form>
+
+    <br>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% if not CK %}
+            <h2>Connect to your account to post something</h2>
+        {% endif %}
+
+        {% if CK and HY == False %}
+            <h2>Your history is empty...</h2>
+            <input type="text" name="INFO">
+            <input type="submit" name="BUTTON" value="REGISTER"/>
+
+        {% elif CK and HY != False %}
+            <h2>This is your history {{CK}}</h2>
+            <input type="text" name="INFO">
+            <input type="submit" name="BUTTON" value="REGISTER"/>
+            <br>
+            {% for I in HY %} <!-- < Will show all registered information -->
+                <h2 style="color: rgb(0, 225, 255);">{{I}}</h2>
+            {% endfor %}
+        {% endif %}
+    </form>
+</body>
+</html>

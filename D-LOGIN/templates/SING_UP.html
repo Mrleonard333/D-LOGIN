@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sing up</title>
+</head>
+<style>
+    body 
+    {
+        background-color: black;
+        color: white;
+    }
+</style>
+
+<body style="font-family: Arial">
+    {% if CK != None %}
+        <h1>[SING_UP] - [{{CK}}]</h1>
+    {% else %}
+        <h1>[SING_UP] - [Unlogged]</h1>
+    {% endif %}
+
+    <h2>Register your account</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="Username">
+        <input type="password" name="Password">
+        <input type="submit" name="BUTTON" value="SEND">
+        <br>
+        <input type="submit" name="BUTTON" value="EXIT">
+    </form>
+    <!-- v If the user tried to sing up, and succeeded -->
+    {% if TRY != "NONE" and TRY == True %}
+        <h1>ACCOUNT CREATED</h1>
+    {% endif %}
+
+    <!-- v If not -->
+    {% if TRY != "NONE" and TRY == False %}
+        <h1 style="color: red;">ACCOUNT ALREADY EXIST</h1>
+    {% endif %}
+
+    {% if TRY == "Null"%}
+        <h1 style="color: red;">SOME INPUTS ARE EMPTY</h1>
+    {% endif %}
+</body>
+</html>
