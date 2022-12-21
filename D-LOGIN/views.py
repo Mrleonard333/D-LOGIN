@@ -53,7 +53,7 @@ def index(request):
                 if Password:
                     AC = models.account.objects.get(Username=AC_Cookie)
                     AC.Password = Password
-                    AC.save() # < Will sabe the changes of the database
+                    AC.save() # < Will save the changes of the database
                     return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"CHANGED"})
                 else:
                     return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"ERROR"})
