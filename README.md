@@ -1,10 +1,11 @@
 # [D-LOGIN]
 ## A login system made with django<br>It use the mysql database and html files
 
-# The system do...
+# The system do:
 ## - Register user account;
 ## - Register and show data from user;
 ## - Rewrite the user account;
 ## - Delete user accoun.
 
 ## The repository only contains the important files for the system to work.
+## To test the system you will need to create and configure others django files.
