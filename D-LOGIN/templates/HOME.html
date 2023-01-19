@@ -17,8 +17,8 @@
 
 <body style="font-family: Arial">
 
-    {% if CK != None %} <!-- < If the AC_Cockie have a value -->
-        <h1>[D-LOGIN] - [{{CK}}]</h1>
+    {% if AC != None %} <!-- < If the Account_Cookie have a value -->
+        <h1>[D-LOGIN] - [{{AC}}]</h1>
                         <!-- ^ Will show the username of the account logged -->
     {% else %}
         <h1>[D-LOGIN] - [Unlogged]</h1>
@@ -30,7 +30,7 @@
         {% csrf_token %} <!-- < Creates a token for security -->
         <input type="submit" name="BUTTON" value="SING_UP"/>
         <input type="submit" name="BUTTON" value="LOGIN"/>
-        {% if CK %}
+        {% if AC %}
             <input type="submit" name="BUTTON" value="DELETE"/>
             <br>
             <br>
@@ -57,17 +57,17 @@
     <form method="POST">
         {% csrf_token %}
 
-        {% if not CK %}
+        {% if not AC %}
             <h2>Connect to your account to post something</h2>
         {% endif %}
 
-        {% if CK and HY == False %}
+        {% if AC and HY == False %}
             <h2>Your history is empty...</h2>
             <input type="text" name="INFO">
             <input type="submit" name="BUTTON" value="REGISTER"/>
 
-        {% elif CK and HY != False %}
-            <h2>This is your history {{CK}}</h2>
+        {% elif AC and HY != False %}
+            <h2>This is your history {{AC}}</h2>
             <input type="text" name="INFO">
             <input type="submit" name="BUTTON" value="REGISTER"/>
             <br>

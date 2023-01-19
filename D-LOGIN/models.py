@@ -7,8 +7,8 @@ class account(models.Model): # < Account database model
     Password = models.CharField(max_length=255, blank=False) # < Password column
 
     def __str__(self):
-        AC = f"{self.Username} {self.Password}" # < What will show
-        return AC
+        Account = f"{self.Username} {self.Password}" # < What will show
+        return Account
 
 class information(models.Model):
     User = models.CharField(max_length=255, blank=False)

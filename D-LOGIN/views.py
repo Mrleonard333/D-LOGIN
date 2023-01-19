@@ -2,132 +2,132 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from . import models
 
-AC_Cookie = None # < Variable for account storage
+Account_Cookie = None # < Variable for account storage
 Information = False # < Variable for Information storage
 History = False # < Variable for all Information store
 
 # Create your views here.
 
 def HISTORY_MAKER(USER):
-    global AC_Cookie, Information
+    global Account_Cookie, Information
 
     History = list()
-    AC_Cookie = USER
-    All = models.information.objects.filter(User=USER) # < Will return a list of the user's posts
+    Account_Cookie = USER
+    Posts = models.information.objects.filter(User=USER) # < Will return a list of the user's posts
 
-    for H in All:
-        History.append(str(H.Info)) # < Will create a list of information strings
+    for PS in Posts:
+        History.append(str(PS.Info)) # < Will create a list of information strings
     return History
 
 def index(request):
-    global AC_Cookie, History, Information
+    global Account_Cookie, History, Information
 
     try:
-        B=str(request.POST["BUTTON"]) # < Will get the button pressed data
-        History = HISTORY_MAKER(AC_Cookie)
+        Button=str(request.POST["BUTTON"]) # < Will get the button pressed data
+        History = HISTORY_MAKER(Account_Cookie)
 
-        if B == "SING_UP":
-            return redirect('/SING_UP/') # < Will redirect the user for the sing up page
+        if Button == "SING_UP":
+            return redirect('/SING_UP/')
         
-        if B == "LOGIN":
+        if Button == "LOGIN":
             return redirect('/LOGIN/')
 
-        if B == "DELETE":
-            All = models.information.objects.filter(User=AC_Cookie) # < Will filter the posts of the user
-            for A in All:
-                A.delete() # < And delete it
-            models.account.objects.get(Username=AC_Cookie).delete() # < Will delete the account
+        if Button == "DELETE":
+            User_Posts = models.information.objects.filter(User=Account_Cookie) # < Will filter the posts of the user
+            for UP in User_Posts:
+                UP.delete()
+            models.account.objects.get(Username=Account_Cookie).delete() # < Will delete the account
 
             History = False
-            AC_Cookie = None
+            Account_Cookie = None
 
-            return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":False}) # < Will show the page
+            return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":False}) # < Will show the page
                                                 # ^ Dict with important variables
-        if B == "CHANGE THE PASSWORD":
-            return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"CHANGING"})
+        if Button == "CHANGE THE PASSWORD":
+            return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":"CHANGING"})
         
-        if B == "SEND":
+        if Button == "SEND":
             try:                                        # v Will remove white spaces
                 Password = str(request.POST["NEW_PASS"]).strip()
                 
                 if Password:
-                    AC = models.account.objects.get(Username=AC_Cookie)
-                    AC.Password = Password
-                    AC.save() # < Will save the changes of the database
-                    return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"CHANGED"})
+                    Account = models.account.objects.get(Username=Account_Cookie)
+                    Account.Password = Password
+                    Account.save() # < Will save the changes of the database
+                    return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":"CHANGED"})
                 else:
-                    return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"ERROR"})
+                    return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":"ERROR"})
             except:
-                return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":"ERROR"})
+                return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":"ERROR"})
         
-        if B == "REGISTER":
+        if Button == "REGISTER":
             info = str(request.POST["INFO"]).strip()
 
             if not Information or Information != info and len(info) >= 1:
                 Information = str(request.POST["INFO"]).strip()
-                models.information(User=AC_Cookie, Info=Information).save()
+                models.information(User=Account_Cookie, Info=Information).save()
             
-            History = HISTORY_MAKER(AC_Cookie)
-            return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":False})
+            History = HISTORY_MAKER(Account_Cookie)
+            return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":False})
     except:
-        return render(request, 'HOME.html', {"CK":AC_Cookie, "HY":History, "CHANGE_PASS":False})
+        return render(request, 'HOME.html', {"AC":Account_Cookie, "HY":History, "CHANGE_PASS":False})
 
 def SING_UP(request):
-    global AC_Cookie, History
+    global Account_Cookie, History
 
     try:
-        B=str(request.POST["BUTTON"])
+        Button=str(request.POST["BUTTON"])
 
-        if B == "EXIT":
+        if Button == "EXIT":
             return redirect('/')
 
-        if B == "SEND":
-            ACCOUNT = True # < Variable that says if the account has been created
+        if Button == "SEND":
+            AT_Verify = True # < Variable that says if the account has been created
             Username = str(request.POST["Username"]).strip() # < Will get the username data
             Password = str(request.POST["Password"]).strip() # < Will get the password data
-            US = models.account.objects.values_list('Username') # < Will get all the usernames from database
+            DB_Usernames = models.account.objects.values_list('Username') # < Will get all the usernames from database
 
             if Password and Username:
-                for U in US:
-                    if Username == str(U[0]):
-                        ACCOUNT = False
+                for User in DB_Usernames:
+                    if Username == str(User[0]):
+                        AT_Verify = False
                         break
-                if ACCOUNT:
+                if AT_Verify:
                     History = HISTORY_MAKER(Username)
-                    AC = models.account(Username=Username, Password=Password) # < Will create a new account
-                    AC.save() # < Will save the new account on database
+                    New_Account = models.account(Username=Username, Password=Password) # < Will create a new account
+                    New_Account.save() # < Will save the new account on database
                 
-                return render(request, 'SING_UP.html', {"TRY":ACCOUNT, "CK":AC_Cookie})
+                return render(request, 'SING_UP.html', {"TRY":AT_Verify, "AC":Account_Cookie})
             else:
-                return render(request, 'SING_UP.html', {"TRY":"Null", "CK":AC_Cookie})
+                return render(request, 'SING_UP.html', {"TRY":"Null", "AC":Account_Cookie})
     except:
-        return render(request, 'SING_UP.html', {"TRY":"NONE", "CK":AC_Cookie})
+        return render(request, 'SING_UP.html', {"TRY":"NONE", "AC":Account_Cookie})
 
 def LOGIN(request):
-    global AC_Cookie, History
+    global Account_Cookie, History
 
     try:
-        B=str(request.POST["BUTTON"])
+        Button=str(request.POST["BUTTON"])
 
-        if B == "EXIT":
+        if Button == "EXIT":
             return redirect('/')
-        if B == "SEND":
-            ACCOUNT = False
+        if Button == "SEND":
+            AT_Verify = False
             Username = str(request.POST["Username"]).strip()
             Password = str(request.POST["Password"]).strip()
-            AC = models.account.objects.all() # < Will get all accounts
+            Account = models.account.objects.all() # < Will get all accounts
 
             if Password and Username:
                 Login = f"{Username} {Password}"
 
-                for A in AC:
-                    if Login == str(A):
+                for AT in Account:
+                    if Login == str(AT):
                         History = HISTORY_MAKER(Username)
-                        ACCOUNT = True
+                        AT_Verify = True
                         break
 
-                return render(request, 'LOGIN.html', {"TRY":ACCOUNT, "CK":AC_Cookie})
+                return render(request, 'LOGIN.html', {"TRY":AT_Verify, "AC":Account_Cookie})
             else:
-                return render(request, 'LOGIN.html', {"TRY":"Null", "CK":AC_Cookie})
+                return render(request, 'LOGIN.html', {"TRY":"Null", "AC":Account_Cookie})
     except:
-        return render(request, 'LOGIN.html', {"TRY":"NONE", "CK":AC_Cookie})
+        return render(request, 'LOGIN.html', {"TRY":"NONE", "AC":Account_Cookie})
